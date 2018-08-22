@@ -175,19 +175,18 @@ def handle(msg):
             elif "/addkey" == txt[:7]:
                 if msg['chat']['type'] != "private":
                     bot.sendMessage(chat_id, "Dieser Befehl kann nur in privaten Chats verwendet werden.")
-                print(msg['from']['id'])
                 keys[msg['from']['id']] = msg['from']['first_name']
                 save_keys(keys)
                 bot.sendMessage(msg['from']['id'], msg['from']['first_name'] + ", du wurdest als Schlüsselträger hinzugefügt.")
             # Löscht eine eine Person aus der Schlüsselträgerliste
-            elif "/rmkey" == txt[:5]:
+            elif "/rmkey" == txt[:6]:
                 if msg['chat']['type'] != 'private':
                     bot.sendMessage(chat_id, "Dieser Befehl kann nur in privaten Chats verwendet werden.")
-                del keys[msg['from']['id']]
+                del keys[str(msg['from']['id'])]
                 save_keys(keys)
                 bot.sendMessage(msg['from']['id'], msg['from']['first_name'] + ", du wurdest als Schlüsselträger entfernt.")
             # Gibt eine Liste aus der Einkäufe
-            elif "/getshoplist" == txt[:11]:
+            elif "/getshoplist" == txt[:12]:
                 output = "Auf der Einkaufsliste sind:\n\n"
                 for i in range(len(shoplist)):
                     output = output + str(i+1) + ". " + shoplist[i] + "\n"
