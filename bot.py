@@ -175,7 +175,7 @@ def handle(msg):
             elif "/addkey" == txt[:7]:
                 if msg['chat']['type'] != "private":
                     bot.sendMessage(chat_id, "Dieser Befehl kann nur in privaten Chats verwendet werden.")
-                keys[msg['from']['id']] = msg['from']['first_name']
+                keys[str(msg['from']['id'])] = msg['from']['first_name']
                 save_keys(keys)
                 bot.sendMessage(msg['from']['id'], msg['from']['first_name'] + ", du wurdest als Schlüsselträger hinzugefügt.")
             # Löscht eine eine Person aus der Schlüsselträgerliste
