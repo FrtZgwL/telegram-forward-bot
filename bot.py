@@ -202,9 +202,10 @@ def handle(msg):
 
                     try:
                         if len(txt_split) == 2:
+                            item = shoplist[int(txt_split[1])-1]
                             del shoplist[int(txt_split[1])-1]
                             save_shoplist(shoplist)
-                            bot.sendMessage(msg['from']['id'], shoplist[int(txt_split[1])-1] + " wurde von der Einkaufsliste gelöscht")
+                            bot.sendMessage(msg['from']['id'], item + " wurde von der Einkaufsliste gelöscht")
                         elif len(txt_split) == 3:
                             del shoplist[int(txt_split[1])-1:int(txt_split[2])]
                             save_shoplist(shoplist)
