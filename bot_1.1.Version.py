@@ -256,10 +256,8 @@ def handle(msg):
                             if chats[tag]['id'] != chat_id:
                                 approved.append(chats[tag]['name'])
                                 bot.forwardMessage(chats[tag]['id'], chat_id, msg['message_id'])
-                                bot.sendMessage(chat_id,  "Deine Nachricht wurde erfolgreich weitergeleitet an <i>" + chats[tag]['name'] + "</i>", parse_mode="HTML")
                                 if 'reply_to_message' in msg:
                                     bot.forwardMessage(chats[tag]['id'], chat_id, msg['reply_to_message']['message_id'])
-                                    bot.sendMessage(chat_id,  "Deine Nachricht wurde erfolgreich weitergeleitet an <i>" + chats[tag]['name'] + "</i>", parse_mode="HTML")
                         elif tag in ignoretags:
                         # Stellt die Variable der Türe auf zu
                             if tag == "#zu":
