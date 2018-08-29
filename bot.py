@@ -194,14 +194,14 @@ def handle(msg):
                 if msg["chat"]["type"] != "private":
                     bot.sendMessage(chat_id, "Dieser Befehl kann nur in privaten Chats verwendet werden.")
                 print(msg["from"]["id"])
-                keys[msg["from"]["id"]] = msg["from"]["first_name"]
+                keys[str(msg["from"]["id"])] = msg["from"]["first_name"]
                 save_keys(keys)
                 bot.sendMessage(msg["from"]["id"], msg["from"]["first_name"] + ", du wurdest als Schlüsselträger hinzugefügt.")
             # Löscht eine eine Person aus der Schlüsselträgerliste
             elif "/rmkey" == txt[:6]:
                 if msg["chat"]["type"] != "private":
                     bot.sendMessage(chat_id, "Dieser Befehl kann nur in privaten Chats verwendet werden.")
-                del keys[msg["from"]["id"]]
+                del keys[str(msg["from"]["id"])]
                 save_keys(keys)
                 bot.sendMessage(msg["from"]["id"], msg["from"]["first_name"] + ", du wurdest als Schlüsselträger entfernt.")
             # Gibt eine Liste aus der Einkäufe
@@ -310,7 +310,7 @@ def handle(msg):
                             elif tag == "#schlüssel":
                                 liste = ""
                                 for id in keys:
-                                    liste = liste + "\n " + keys[id]
+                                    liste = liste + "\n" + keys[id]
                                     bot.forwardMessage(id, chat_id, msg["message_id"])
                                     if "reply_to_message" in msg:
                                         bot.forwardMessage(id, chat_id, msg["reply_to_message"]["message_id"])
