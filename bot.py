@@ -168,7 +168,7 @@ def handle(msg):
                 response = "<b>#-Gruppen</b>"
                 for (tag, name) in sorted(tags_names):
                     response = response + "\n<b>" + tag + "</b>: <i>" + name + "</i>"
-                response = response + "\n\n<b>#-Funktionen</b>" + "\n<b>#offen:</b> <i>Türe offen</i>\n<b>#zu:</b> <i>Türe zu</i>\n<b>#tür:</b> <i>Ist die Türe offen?</i>"
+                response = response + "\n\n<b>#-Funktionen</b>" + "\n<b>#offen:</b> <i>Türe offen</i>\n<b>#zu:</b> <i>Türe zu</i>\n<b>#tür:</b> <i>Ist die Türe offen?</i>\n<b>#schlüssel:</b> <i>Nachricht an Schlüsselträger</i>\n<b>#einkaufsliste:</b> <i>Zu Einkaufsliste hinzufügen</i>"
 
                 bot.sendMessage(chat_id, response, parse_mode="HTML")
             # Fügt eine Person zur Schlüsselträgerliste zu
@@ -222,7 +222,7 @@ def handle(msg):
             # Legt die Hilfe-Funktion fest
             elif "/help" == txt[:5] or "/?" == txt[:2]:
                 txt_split = txt.strip().split(" ")
-                bot.sendMessage(msg['from']['id'], "FaustBüropkratbot:\nDieser Bot hilft dir die Kommunitkation im Faust zu organisiern.\n\n#-Tag für Gruppen:\n#bar - du schreibst in die Bar Gruppe\n#einkauf - du schreibst in die Einkaufsgruppe\n#events - du schreibst in die Eventrgruppe\n#finanzen - du schreibst in die Finazengruppe\n#getränke - du schreibst in die Getränkegruppe\n#lager - du schreibst an die Lagergruppe\n#orgateam - Koordinationsteam für die Systemänderung\n#publicitiy - Du schreibst an Öffenlichkeitsarbeit\n#schlüssel - du schreibst an alle Schlüsselträger\n#schriftverkehr - du schreibst an die Schriftverkehrgruppe\n#spiele - du schreibst an die Spielegruppe\n#technik - du schreibst an die Technikgruppe\n#vorstand - du schreibst an die Vorstände\n\n#-Funktionen:\n#offen - du schließt das Faust auf\n#tür - sagt die, ob das Faust offen ist\n#zu - du schließt das Faust zu\n\n /-Funktion:\n/addkey - du wirst neuer Schlüsselträger\n/getshoplist - die Getränkeliste\n/rmkey - du bist kein Schlüsselträger\n/taglist - zeigt die alle verfügbaren Tags an")
+                bot.sendMessage(msg['from']['id'], "FaustBüropkratbot:\nDieser Bot hilft dir die Kommunitkation im Faust zu organisiern.\n\n#-Tag für Gruppen:\n#bar - du schreibst in die Bar Gruppe\n#einkauf - du schreibst in die Einkaufsgruppe\n#events - du schreibst in die Eventrgruppe\n#finanzen - du schreibst in die Finazengruppe\n#lager - du schreibst an die Lagergruppe\n#orgateam - Koordinationsteam für die Systemänderung\n#publicitiy - Du schreibst an Öffenlichkeitsarbeit\n#spiele - du schreibst an die Spielegruppe\n#technik - du schreibst an die Technikgruppe\n#vorstand - du schreibst an die Vorstände\n\n#-Funktionen:\n#offen - du schließt das Faust auf\n#tür - sagt die, ob das Faust offen ist\n#zu - du schließt das Faust zu\n#schlüssel - du schreibst an alle Schlüsselträger\n#einkaufsliste - du fügst einen Artikel zur Einkaufsliste hinzu\n\n /-Funktion:\n/addkey - du wirst neuer Schlüsselträger\n/getshoplist - die Getränkeliste\n/rmkey - du bist kein Schlüsselträger\n/taglist - zeigt die alle verfügbaren Tags an")
 
             # Legt die Tag Funktion fest
             elif "#" == txt[0]:
