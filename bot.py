@@ -12,15 +12,15 @@ from telepot.loop import MessageLoop
 
 def save_status(obj):
     with open("Daten/chats.json", "w") as f:
-        f.write(json.dumps(obj))
+        f.write(json.dumps(obj, indent=2, sort_keys=True))
 
 def save_allowed(s):
     with open("Daten/allowed.json", "w") as f:
-        f.write(json.dumps(list(s)))
+        f.write(json.dumps(list(s), indent=2))
 
 def save_keys(obj):
     with open("Daten/keys.json", "w") as f:
-        f.write(json.dumps(obj))
+        f.write(json.dumps(obj, indent=2))
 
 def save_dooropen(s):
     with open("Daten/dooropen.json", "w") as f:
@@ -28,11 +28,11 @@ def save_dooropen(s):
 
 def save_shoplist(list):
     with open("Daten/shoplist.json", "w") as f:
-        f.write(json.dumps(list))
+        f.write(json.dumps(list, indent=2))
 
 def save_namelist(namelist):
     with open("Daten/namelist.json", "w") as f:
-        f.write(json.dumps(namelist))
+        f.write(json.dumps(namelist, indent=2, sort_keys=True))
 
 # --- Funktion zum Senden zufälliger Nachrichten --- #
 
