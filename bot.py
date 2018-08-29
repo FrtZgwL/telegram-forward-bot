@@ -30,6 +30,10 @@ def save_shoplist(list):
     with open('Daten/shoplist.json', 'w') as f:
         f.write(json.dumps(list))
 
+def save_namelist(namelist):
+    with open("Daten/namelist.json", "w") as f:
+        f.write(json.dumps(namelist))
+
 # --- Funktion zum Senden zufälliger Nachrichten --- #
 
 def random_message(chat_id, messagelist):
@@ -52,6 +56,9 @@ if not os.path.isfile('Daten/dooropen.json'):
 if not os.path.isfile('Daten/shoplist.json'):
     save_shoplist([])
 
+if not os.path.isfile("Daten/namelist.json"):
+    save_namelist({})
+
 # --- Globale Variablen --- #
 
 chats = {}
@@ -59,6 +66,7 @@ allowed = []
 keys = {}
 shoplist = []
 dooropen = False
+namelist = {}
 TOKEN = ""
 PASSWORD = "changeme"
 
@@ -76,6 +84,9 @@ with open('Daten/dooropen.json', 'r') as f:
 
 with open('Daten/shoplist.json', 'r') as f:
     shoplist = json.load(f)
+
+with open("Daten/namelist.json", "r") as f:
+    namelist = json.load(f)
 
 if os.path.isfile('Daten/config.json'):
     with open('Daten/config.json', 'r') as f:
@@ -105,6 +116,13 @@ def handle(msg):
     # Add person as allowed
     content_type, chat_type, chat_id = telepot.glance(msg)
     txt = ""
+
+    # steal user data
+    if not str(chat_id) in namelist:
+        if msg['chat']['type'] == "private":
+            namelist[str(chat_id)] = msg['chat']['first_name'] + (" " + msg['chat']['last_name'] if 'last_name' in msg['chat'] else "")
+            save_namelist(namelist)
+
     if 'text' in msg:
         txt = txt + msg['text']
     elif 'caption' in msg:
