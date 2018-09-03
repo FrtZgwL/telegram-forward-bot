@@ -308,14 +308,22 @@ def handle(msg):
                                 bot.sendMessage(chat_id, "Okay, ich habe <i>" + msg["text"][14:] + "</i> zur Einkaufsliste hinzugefügt.", parse_mode="HTML")
                             # Sende eine Nachricht an jeden Schlüsselträger
                             elif tag == "#schlüssel":
-                                liste = ""
-                                for id in keys:
-                                    liste = liste + "\n" + keys[id]
-                                    bot.forwardMessage(id, chat_id, msg["message_id"])
-                                    if "reply_to_message" in msg:
-                                        bot.forwardMessage(id, chat_id, msg["reply_to_message"]["message_id"])
+                                if (len(txt_split) > 1):
+                                    # Nachricht weiterleiten
+                                    liste = ""
+                                    for id in keys:
+                                        liste = liste + "\n" + keys[id]
+                                        bot.forwardMessage(id, chat_id, msg["message_id"])
+                                        if "reply_to_message" in msg:
+                                            bot.forwardMessage(id, chat_id, msg["reply_to_message"]["message_id"])
 
-                                bot.sendMessage(chat_id, "Hey, " + msg["from"]["first_name"] + "! Deine Nachricht wurde weitergelet an:" + liste)
+                                    bot.sendMessage(chat_id, "Hey, " + msg["from"]["first_name"] + "! Deine Nachricht wurde weitergelet an:" + liste)
+                                else:
+                                    # Nur Liste mit Schlüsselträgern ausgeben
+                                    liste = ""
+                                    for id in keys:
+                                        liste = liste + "\n" + keys[id]
+                                    bot.sendMessage(chat_id, "Hey, " + msg["from"]["first_name"] + "! Die aktuellen Schlüsselträger sind:" + liste)
                         else:
                             rejected.append(tag)
                     # Gibt eine Fehlernachricht, welche Tags falsch sind
