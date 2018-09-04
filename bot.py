@@ -73,7 +73,7 @@ if not os.path.isfile("Daten/info.json"):
 if not os.path.isfile("Daten/springer.json"):
     save_springer({})
 
-# --- Globale Variablen --- #
+# --- Globale Variablen -- #
 
 chats = {}
 allowed = []
@@ -339,7 +339,7 @@ def handle(msg):
                     i+=1
 
                 # check if message consists exclusively of ignoretags
-                ignoretags = ["#zu", "#offen", "#tür", "#schlüssel", "#einkaufsliste", "#springer"]
+                ignoretags = ["#zu", "#offen", "#tür", "#schlüssel", "#einkaufsliste", "#springer", "#all"]
                 for tag in info:
                     ignoretags.append(tag)
 
@@ -393,6 +393,9 @@ def handle(msg):
                                 else:
                                     print("Türen sind zu")
                                     bot.sendMessage(chat_id, "Das Faust ist zu. Du musst deinen Alkohol leider bei Lidl kaufen.")
+                            elif tag == "#all":
+                                for id in allowed:
+                                    bot.forwardMessage(id, chat_id, msg["message_id"])
                             elif tag == "#springer":
                                 if (len(txt_split) > 1):
                                     # Nachricht weiterleiten
