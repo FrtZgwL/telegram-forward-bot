@@ -38,6 +38,10 @@ def save_urls(urls):
     with open("Daten/urls.json", "w") as f:
         f.write(json.dumps(urls, indent=2, sort_keys=True))
 
+def save_springer(springer):
+    with open("Daten/springer.json", "w") as f:
+        f.write(json.dumps(springer, indent=2, sort_keys=True))
+
 # --- Funktion zum Senden zufälliger Nachrichten --- #
 
 def random_message(chat_id, messagelist):
@@ -66,6 +70,9 @@ if not os.path.isfile("Daten/namelist.json"):
 if not os.path.isfile("Daten/urls.json"):
     save_urls({})
 
+if not os.path.isfile("Daten/springer.json"):
+    save_springer({})
+
 # --- Globale Variablen --- #
 
 chats = {}
@@ -74,7 +81,8 @@ keys = {}
 shoplist = []
 dooropen = False
 namelist = {}
-urls = {} # dict mit hashtag:url
+urls = {} # dict mit hashtag(string):url(string)
+springer = {} # dict mit chatid(string):name(string)
 TOKEN = ""
 PASSWORD = "changeme"
 
@@ -98,6 +106,9 @@ with open("Daten/namelist.json", "r") as f:
 
 with open("Daten/urls.json", "r") as f:
     urls = json.load(f)
+
+with open("Daten/springer.json", "r") as f:
+    springer = json.load(f)
 
 if os.path.isfile("Daten/config.json"):
     with open("Daten/config.json", "r") as f:
@@ -123,6 +134,7 @@ def handle(msg):
     global shoplist
     global chats
     global urls
+    global springer
 
     print("Message: " + str(msg))
     # Add person as allowed
@@ -324,7 +336,7 @@ def handle(msg):
                     i+=1
 
                 # check if message consists exclusively of ignoretags
-                ignoretags = ["#zu", "#offen", "#tür", "#schlüssel", "#einkaufsliste"]
+                ignoretags = ["#zu", "#offen", "#tür", "#schlüssel", "#einkaufsliste", "#springer"]
                 for tag in urls:
                     ignoretags.append(tag)
 
@@ -378,6 +390,23 @@ def handle(msg):
                                 else:
                                     print("Türen sind zu")
                                     bot.sendMessage(chat_id, "Das Faust ist zu. Du musst deinen Alkohol leider bei Lidl kaufen.")
+                            elif tag == "#springer":
+                                if (len(txt_split) > 1):
+                                    # Nachricht weiterleiten
+                                    liste = ""
+                                    for id in springer:
+                                        liste = liste + "\n" + springer[id]
+                                        bot.forwardMessage(id, chat_id, msg["message_id"])
+                                        if "reply_to_message" in msg:
+                                            bot.forwardMessage(id, chat_id, msg["reply_to_message"]["message_id"])
+
+                                    bot.sendMessage(chat_id, "Hey, " + msg["from"]["first_name"] + "! Deine Nachricht wurde weitergelet an:" + liste)
+                                else:
+                                    # Nur Liste mit Schlüsselträgern ausgeben
+                                    liste = ""
+                                    for id in springer:
+                                        liste = liste + "\n" + springer[id]
+                                    bot.sendMessage(chat_id, "Hey, " + msg["from"]["first_name"] + "! Die aktuellen Springer sind:" + liste)
                             # Fügt einen Artikel zur Einkaufsliste hinzu
                             elif tag == "#einkaufsliste":
                                 shoplist.append(msg["text"][15:])
