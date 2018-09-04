@@ -42,6 +42,10 @@ def save_springer(springer):
     with open("Daten/springer.json", "w") as f:
         f.write(json.dumps(springer, indent=2, sort_keys=True))
 
+def save_admins(admins):
+    with open("Daten/admins.json", "w") as f:
+        f.write(json.dumps(admins, indent=2, sort_keys=True))
+
 # --- Funktion zum Senden zufälliger Nachrichten --- #
 
 def random_message(chat_id, messagelist):
@@ -73,6 +77,9 @@ if not os.path.isfile("Daten/info.json"):
 if not os.path.isfile("Daten/springer.json"):
     save_springer({})
 
+if not os.path.isfile("Daten/admins.json"):
+    save_admins([])
+
 # --- Globale Variablen -- #
 
 chats = {}
@@ -83,8 +90,10 @@ dooropen = False
 namelist = {}
 info = {} # dict mit hashtag(string):info(string)
 springer = {} # dict mit chatid(string):name(string)
+admins = [] # Liste mit chatids(int)
 TOKEN = ""
 PASSWORD = "changeme"
+ADMINPASSWORD = ""
 
 with open("Daten/chats.json", "r") as f:
     chats = json.load(f)
@@ -110,6 +119,9 @@ with open("Daten/info.json", "r") as f:
 with open("Daten/springer.json", "r") as f:
     springer = json.load(f)
 
+with open("Daten/admins.json", "r") as f:
+    admins = json.load(f)
+
 if os.path.isfile("Daten/config.json"):
     with open("Daten/config.json", "r") as f:
         config = json.load(f)
@@ -121,6 +133,7 @@ if os.path.isfile("Daten/config.json"):
                   " and forward messages to the channels associated to it")
         TOKEN = config["token"]
         PASSWORD = config["password"]
+        ADMINPASSWORD = config["adminpassword"]
 else:
     sys.exit("No config file found. Remember changing the name of config-sample.json to Daten/config.json")
 
@@ -135,6 +148,7 @@ def handle(msg):
     global chats
     global info
     global springer
+    global admins
 
     print("Message: " + str(msg))
     # Add person as allowed
@@ -291,6 +305,31 @@ def handle(msg):
                 # In Datei speichern
                 save_info(info)
 
+            elif "/addadmin" == txt[:9]:
+                if msg["chat"]["type"] == "private":
+                    if txt[10:] == ADMINPASSWORD:
+                        if chat_id in admins:
+                            bot.sendMessage(chat_id, msg["from"]["first_name"] + ", du bist bereits Admin.")
+                        else:
+                            admins.append(chat_id)
+                            save_admins(admins)
+                            bot.sendMessage(chat_id, msg["from"]["first_name"] + ", du wurdest als Admin hinzugefügt.")
+                    else:
+                        bot.sendMessage(chat_id, "Falsches Passwort.")
+                else:
+                    bot.sendMessage(chat_id, "Nur einzelne Personen können Admins sein.")
+
+            elif "/rmadmin" == txt[:8]:
+                if msg["chat"]["type"] == "private":
+                    if chat_id in admins:
+                        admins.remove(chat_id)
+                        save_admins(admins)
+                        bot.sendMessage(chat_id, msg["from"]["first_name"] + ", du wurdest als Admin gelöscht.")
+                    else:
+                        bot.sendMessage(chat_id, "Du kannst dich nicht als Admin entfernen, weil du keiner bist.")
+                else:
+                    bot.sendMessage(chat_id, "Nur einzelne Personen können Admins sein.")
+
             # Gibt eine Liste aus der Einkäufe
             elif "/getshoplist" == txt[:12]:
                 output = "Auf der Einkaufsliste sind:\n\n"
@@ -395,8 +434,11 @@ def handle(msg):
                                     print("Türen sind zu")
                                     bot.sendMessage(chat_id, "Das Faust ist zu. Du musst deinen Alkohol leider bei Lidl kaufen.")
                             elif tag == "#all":
-                                for id in allowed:
-                                    bot.forwardMessage(id, chat_id, msg["message_id"])
+                                if chat_id in admins:
+                                    for id in allowed:
+                                        bot.forwardMessage(id, chat_id, msg["message_id"])
+                                else:
+                                    bot.sendMessage(chat_id, "Sorry, aber nur Admins können Nachrichten über <i>#all</i> senden.", parse_mode="HTML")
                             elif tag == "#springer":
                                 if (len(txt_split) > 1):
                                     # Nachricht weiterleiten
