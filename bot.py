@@ -34,9 +34,9 @@ def save_namelist(namelist):
     with open("Daten/namelist.json", "w") as f:
         f.write(json.dumps(namelist, indent=2, sort_keys=True))
 
-def save_urls(urls):
-    with open("Daten/urls.json", "w") as f:
-        f.write(json.dumps(urls, indent=2, sort_keys=True))
+def save_info(info):
+    with open("Daten/info.json", "w") as f:
+        f.write(json.dumps(info, indent=2, sort_keys=True))
 
 def save_springer(springer):
     with open("Daten/springer.json", "w") as f:
@@ -67,8 +67,8 @@ if not os.path.isfile("Daten/shoplist.json"):
 if not os.path.isfile("Daten/namelist.json"):
     save_namelist({})
 
-if not os.path.isfile("Daten/urls.json"):
-    save_urls({})
+if not os.path.isfile("Daten/info.json"):
+    save_info({})
 
 if not os.path.isfile("Daten/springer.json"):
     save_springer({})
@@ -81,7 +81,7 @@ keys = {}
 shoplist = []
 dooropen = False
 namelist = {}
-urls = {} # dict mit hashtag(string):url(string)
+info = {} # dict mit hashtag(string):info(string)
 springer = {} # dict mit chatid(string):name(string)
 TOKEN = ""
 PASSWORD = "changeme"
@@ -104,8 +104,8 @@ with open("Daten/shoplist.json", "r") as f:
 with open("Daten/namelist.json", "r") as f:
     namelist = json.load(f)
 
-with open("Daten/urls.json", "r") as f:
-    urls = json.load(f)
+with open("Daten/info.json", "r") as f:
+    info = json.load(f)
 
 with open("Daten/springer.json", "r") as f:
     springer = json.load(f)
@@ -133,7 +133,7 @@ def handle(msg):
     # define global variables
     global shoplist
     global chats
-    global urls
+    global info
     global springer
 
     print("Message: " + str(msg))
@@ -211,9 +211,9 @@ def handle(msg):
                 for (tag, name) in sorted(tags_names):
                     response = response + "\n<b>" + tag + "</b>: <i>" + name + "</i>"
                 response = response + "\n\n<b>#-Funktionen</b>" + "\n<b>#offen:</b> <i>Türe offen</i>\n<b>#zu:</b> <i>Türe zu</i>\n<b>#tür:</b> <i>Ist die Türe offen?</i>\n<b>#schlüssel:</b> <i>Nachricht an Schlüsselträger</i>\n<b>#einkaufsliste:</b> <i>Zu Einkaufsliste hinzufügen</i>"
-                response = response + "\n\n<b>#-URLs</b>"
-                for tag in urls:
-                    response = response + "\n<b>" + tag + ":</b> <i>" + urls[tag] + "</i>"
+                response = response + "\n\n<b>#-Info</b>"
+                for tag in info:
+                    response = response + "\n<b>" + tag + ":</b> <i>" + info[tag] + "</i>"
 
                 bot.sendMessage(chat_id, response, parse_mode="HTML")
             # Fügt eine Person zur Schlüsselträgerliste zu
@@ -232,13 +232,13 @@ def handle(msg):
                 save_keys(keys)
                 bot.sendMessage(msg["from"]["id"], msg["from"]["first_name"] + ", du wurdest als Schlüsselträger entfernt.")
             # Fügt einen neuen Hashtag als Link hinzu
-            elif "/addurl" == txt[:7]:
+            elif "/addinfo" == txt[:8]:
                 txt_split = txt.strip().split(" ")
-                helpstring = "Halte bitte dieses Format ein:\n/addurl <i>#deintag http://www.deineurl.com</i>"
+                helpstring = "Halte bitte dieses Format ein:\n/addinfo <i>#deintag<i/> \{<i>dein Info</i>}"
 
                 # Schrei, wenn leer
                 if len(txt_split) == 1:
-                    bot.sendMessage(chat_id, "Deine Nachricht ist leer. Gib bitte einen Hashtag und einen Link an.")
+                    bot.sendMessage(chat_id, "Deine Nachricht ist leer. Gib bitte einen Hashtag und deine Info an.")
                     bot.sendMessage(chat_id, helpstring, parse_mode="HTML")
 
                 # Schrei, wenns keinen Hashtag gibt
@@ -248,29 +248,29 @@ def handle(msg):
 
                 # Schrei, wenns keinen Text gibt
                 elif len(txt_split) <= 2:
-                    bot.sendMessage(chat_id, "Du hast keinen Link angegeben")
+                    bot.sendMessage(chat_id, "Du hast keine Info angegeben")
                     bot.sendMessage(chat_id, helpstring, parse_mode="HTML")
 
                 # Schrei, wenns den Tag schon gibt
-                elif txt_split[1].lower() in urls:
+                elif txt_split[1].lower() in info:
                     bot.sendMessage(chat_id, "Den Tag <i>" + txt_split[1].lower() + "</i> gibt es schon.", parse_mode="HTML")
                     bot.sendMessage(chat_id, helpstring, parse_mode="HTML")
 
                 # Neuen Tag hinzufügen
                 else:
-                    urls[txt_split[1].lower()] = txt_split[2]
+                    info[txt_split[1].lower()] = txt_split[2]
                     bot.sendMessage(chat_id, "Dein Tag <i>" + txt_split[1].lower() + "</i> wurde hinzugefügt", parse_mode="HTML")
 
                 # In Datei speichern
-                save_urls(urls)
+                save_info(info)
 
-            elif "/rmurl" == txt[:6]:
+            elif "/rminfo" == txt[:7]:
                 txt_split = txt.strip().split(" ")
-                helpstring = "Halte bitte dieses Format ein:\n/addurl <i>#deintag http://www.deineurl.com</i>"
+                helpstring = "Halte bitte dieses Format ein:\n/addinfo <i>#deintag<i/> \{<i>dein Info</i>}"
 
                 # Schrei, wenn leer
                 if len(txt_split) == 1:
-                    bot.sendMessage(chat_id, "Deine Nachricht ist leer. Gib bitte einen Hashtag und einen Link an.")
+                    bot.sendMessage(chat_id, "Deine Nachricht ist leer. Gib bitte einen Hashtag und eine Info an.")
                     bot.sendMessage(chat_id, helpstring, parse_mode="HTML")
 
                 # Schrei, wenns keinen Hashtag gibt
@@ -279,17 +279,17 @@ def handle(msg):
                     bot.sendMessage(chat_id, helpstring, parse_mode="HTML")
 
                 # Schrei, wenns den Tag nicht gibt
-                elif txt_split[1].lower() not in urls:
+                elif txt_split[1].lower() not in info:
                     bot.sendMessage(chat_id, "Den Tag <i>" + txt_split[1] + "</i> gibt es noch nicht. Du kannst nur Tags löschen, die es schon gibt.", parse_mode="HTML")
                     bot.sendMessage(chat_id, helpstring, parse_mode="HTML")
 
                 # Tag löschen
                 else:
-                    del urls[txt_split[1].lower()]
+                    del info[txt_split[1].lower()]
                     bot.sendMessage(chat_id, "Der Tag <i>" + txt_split[1].lower() + "</i> wurde gelöscht", parse_mode="HTML")
 
                 # In Datei speichern
-                save_urls(urls)
+                save_info(info)
 
             # Gibt eine Liste aus der Einkäufe
             elif "/getshoplist" == txt[:12]:
@@ -340,7 +340,7 @@ def handle(msg):
 
                 # check if message consists exclusively of ignoretags
                 ignoretags = ["#zu", "#offen", "#tür", "#schlüssel", "#einkaufsliste", "#springer"]
-                for tag in urls:
+                for tag in info:
                     ignoretags.append(tag)
 
                 ignoremessage = True
@@ -370,8 +370,8 @@ def handle(msg):
                                     bot.forwardMessage(chats[tag]["id"], chat_id, msg["reply_to_message"]["message_id"])
                                     bot.sendMessage(chat_id,  "Deine Nachricht wurde erfolgreich weitergeleitet an <i>" + chats[tag]["name"] + "</i>", parse_mode="HTML")
                         elif tag in ignoretags:
-                            if tag in urls:
-                                bot.sendMessage(chat_id, urls[tag])
+                            if tag in info:
+                                bot.sendMessage(chat_id, info[tag])
                             # Stellt die Variable der Türe auf zu
                             elif tag == "#zu":
                                 save_dooropen(False)
