@@ -328,6 +328,7 @@ def handle(msg):
             elif "/help" == txt[:5] or "/?" == txt[:2]:
                 txt_split = txt.strip().split(" ")
                 bot.sendMessage(msg["from"]["id"], "FaustBüropkratbot:\nDieser Bot hilft dir die Kommunitkation im Faust zu organisiern.\n\n#-Tag für Gruppen:\n#bar - du schreibst in die Bar Gruppe\n#einkauf - du schreibst in die Einkaufsgruppe\n#events - du schreibst in die Eventrgruppe\n#finanzen - du schreibst in die Finazengruppe\n#lager - du schreibst an die Lagergruppe\n#orgateam - Koordinationsteam für die Systemänderung\n#publicity - Du schreibst an Öffenlichkeitsarbeit\n#spiele - du schreibst an die Spielegruppe\n#technik - du schreibst an die Technikgruppe\n#vorstand - du schreibst an die Vorstände\n\n#-Funktionen:\n#offen - du schließt das Faust auf\n#tür - sagt die, ob das Faust offen ist\n#zu - du schließt das Faust zu\n#schlüssel - du schreibst an alle Schlüsselträger\n#einkaufsliste - du fügst einen Artikel zur Einkaufsliste hinzu\n\n /-Funktion:\n/addkey - du wirst neuer Schlüsselträger\n/getshoplist - die Getränkeliste\n/rmkey - du bist kein Schlüsselträger\n/taglist - zeigt die alle verfügbaren Tags an")
+                #/tagliste Funktion in Hilfe inegrieren, ebenso die ignoretags als Variable davor defnieren und einsetzten
 
             # Legt die Tag Funktion fest
             elif "#" == txt[0]:
